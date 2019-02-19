@@ -57,7 +57,7 @@ class Timer extends React.Component {
             <div className="timer-container">
                 <div id="timer-label">{this.props.title}</div>
                 <div id="time-left" style={this.props.time.minutes === 0 ? { color: 'black' } : {}}>
-                    {this.props.time.minutes.toString().padStart(2, '0')} : {this.props.time.seconds.toString().padStart(2, '0')}
+                    {this.props.time.minutes.toString().padStart(2, '0')}:{this.props.time.seconds.toString().padStart(2, '0')}
                 </div>
             </div>
         );
@@ -125,18 +125,16 @@ export default class PomodoroClock extends React.Component {
             currentTime.minutes -= 1;
             currentTime.seconds = 59;
         } else {
+            document.getElementById('beep').play();
+            setTimeout(() => { document.getElementById('beep').pause(); document.getElementById('beep').currentTime = 0; }, 1000);
             if (currentTimerTitle === 'Session') {
-                currentTime.minutes = this.state.options.break - 1;
+                currentTime.minutes = this.state.options.break;
                 currentTimerTitle = 'Break';
             } else {
-                currentTime.minutes = this.state.options.session - 1;
+                currentTime.minutes = this.state.options.session;
                 currentTimerTitle = 'Session';
             }
-            currentTime.seconds = 59;
-        }
-        if (currentTime.minutes + currentTime.seconds === 0) {
-            document.getElementById('beep').play();
-            setTimeout(() => { document.getElementById('beep').pause(); document.getElementById('beep').currentTime = 0; }, 2000);
+            currentTime.seconds = 0;
         }
         this.setState({ currentTimerTitle, currentTime });
     }
@@ -158,7 +156,7 @@ export default class PomodoroClock extends React.Component {
         this.timerInterval = null;
         document.getElementById('beep').pause();
         document.getElementById('beep').currentTime = 0;
-        this.setState({ currentTime: { minutes: 0, seconds: 0 }, options: { break: 5, session: 25 }, isPaused: true, currentTimerTitle: 'Session' });
+        this.setState({ currentTime: { minutes: 25, seconds: 0 }, options: { break: 5, session: 25 }, isPaused: true, currentTimerTitle: 'Session' });
     }
 
     render() {
